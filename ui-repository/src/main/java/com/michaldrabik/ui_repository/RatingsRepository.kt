@@ -32,6 +32,8 @@ class RatingsRepository @Inject constructor(
     return showsCache?.toList() ?: emptyList()
   }
 
+  fun loadCacheRatings() = showsCache?.toList() ?: emptyList()
+
   suspend fun loadRating(token: String, show: Show): TraktRating? {
     if (showsCache == null) {
       val ratings = cloud.traktApi.fetchShowsRatings(token)

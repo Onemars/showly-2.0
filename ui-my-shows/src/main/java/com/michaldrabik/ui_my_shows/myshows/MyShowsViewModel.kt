@@ -14,6 +14,7 @@ import com.michaldrabik.ui_model.MyShowsSection.UPCOMING
 import com.michaldrabik.ui_model.MyShowsSection.WATCHING
 import com.michaldrabik.ui_model.Show
 import com.michaldrabik.ui_model.SortOrder
+import com.michaldrabik.ui_model.TraktRating
 import com.michaldrabik.ui_my_shows.myshows.cases.MyShowsLoadShowsCase
 import com.michaldrabik.ui_my_shows.myshows.recycler.MyShowsItem
 import com.michaldrabik.ui_my_shows.myshows.recycler.MyShowsItem.Type
@@ -30,7 +31,12 @@ class MyShowsViewModel @Inject constructor(
   fun loadShows(notifyListsUpdate: Boolean = false) {
     viewModelScope.launch {
       val settings = loadShowsCase.loadSettings()
-      val shows = loadShowsCase.loadAllShows().map { toListItemAsync(Type.ALL_SHOWS_ITEM, it) }.awaitAll()
+      val ratings = loadShowsCase.loadRatings()
+      val shows = loadShowsCase.loadAllShows()
+        .map {
+          val rating = ratings.find { r -> r.idTrakt.id == it.traktId }
+          toListItemAsync(Type.ALL_SHOWS_ITEM, it, rating = rating)
+        }.awaitAll()
       val seasons = loadShowsCase.loadSeasonsForShows(shows.map { it.show.traktId })
 
       val allShows = loadShowsCase.filterSectionShows(shows, seasons, ALL)
@@ -136,9 +142,10 @@ class MyShowsViewModel @Inject constructor(
   private fun CoroutineScope.toListItemAsync(
     itemType: Type,
     show: Show,
-    type: ImageType = POSTER
+    type: ImageType = POSTER,
+    rating: TraktRating? = null
   ) = async {
     val image = loadShowsCase.findCachedImage(show, type)
-    MyShowsItem(itemType, null, null, null, show, image, false)
+    MyShowsItem(itemType, null, null, null, show, image, false, rating)
   }
 }

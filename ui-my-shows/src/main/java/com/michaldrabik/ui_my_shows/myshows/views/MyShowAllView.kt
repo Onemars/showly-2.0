@@ -44,7 +44,12 @@ class MyShowAllView : ShowView<MyShowsItem> {
     myShowAllDescription.text = item.show.overview
     val year = if (item.show.year > 0) " (${item.show.year})" else ""
     myShowAllNetwork.text = "${item.show.network}$year"
-    myShowAllRating.text = String.format("%.1f", item.show.rating)
+
+    if (item.rating == null) {
+      myShowAllRating.text = String.format("%.1f", item.show.rating)
+    } else {
+      myShowAllRating.text = String.format("%.1f | You: %d", item.show.rating, item.rating.rating)
+    }
 
     myShowAllDescription.visibleIf(item.show.overview.isNotBlank())
     myShowAllNetwork.visibleIf(item.show.network.isNotBlank())

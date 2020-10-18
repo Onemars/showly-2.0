@@ -6,6 +6,7 @@ import com.michaldrabik.ui_model.ImageType.POSTER
 import com.michaldrabik.ui_model.MyShowsSection
 import com.michaldrabik.ui_model.Show
 import com.michaldrabik.ui_model.SortOrder
+import com.michaldrabik.ui_model.TraktRating
 
 data class MyShowsItem(
   val type: Type,
@@ -14,7 +15,8 @@ data class MyShowsItem(
   val horizontalSection: HorizontalSection?,
   override val show: Show,
   override val image: Image,
-  override val isLoading: Boolean
+  override val isLoading: Boolean,
+  val rating: TraktRating?
 ) : ListItem {
 
   enum class Type {
@@ -52,7 +54,8 @@ data class MyShowsItem(
       null,
       Show.EMPTY,
       Image.createUnavailable(POSTER),
-      false
+      false,
+      null
     )
 
     fun createRecentsSection(
@@ -64,7 +67,8 @@ data class MyShowsItem(
       null,
       Show.EMPTY,
       Image.createUnavailable(POSTER),
-      false
+      false,
+      null
     )
 
     fun createHorizontalSection(
@@ -77,7 +81,8 @@ data class MyShowsItem(
       HorizontalSection(section, shows.map { it.copy(type = Type.HORIZONTAL_SHOWS) }),
       Show.EMPTY,
       Image.createUnavailable(POSTER),
-      false
+      false,
+      null
     )
 
     fun createSearchItem(
@@ -90,7 +95,8 @@ data class MyShowsItem(
       null,
       show,
       image,
-      false
+      false,
+      null
     )
   }
 }

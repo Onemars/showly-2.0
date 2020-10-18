@@ -19,6 +19,7 @@ import com.michaldrabik.ui_model.SortOrder.NAME
 import com.michaldrabik.ui_model.SortOrder.NEWEST
 import com.michaldrabik.ui_model.SortOrder.RATING
 import com.michaldrabik.ui_my_shows.myshows.recycler.MyShowsItem
+import com.michaldrabik.ui_repository.RatingsRepository
 import com.michaldrabik.ui_repository.SettingsRepository
 import com.michaldrabik.ui_repository.shows.ShowsRepository
 import javax.inject.Inject
@@ -27,6 +28,7 @@ import javax.inject.Inject
 class MyShowsLoadShowsCase @Inject constructor(
   private val imagesProvider: ShowImagesProvider,
   private val showsRepository: ShowsRepository,
+  private val ratingsRepository: RatingsRepository,
   private val settingsRepository: SettingsRepository,
   private val database: AppDatabase
 ) {
@@ -34,6 +36,8 @@ class MyShowsLoadShowsCase @Inject constructor(
   suspend fun loadSettings() = settingsRepository.load()
 
   suspend fun loadAllShows() = showsRepository.myShows.loadAll()
+
+  suspend fun loadRatings() = ratingsRepository.loadCacheRatings()
 
   suspend fun loadSeasonsForShows(traktIds: List<Long>, buffer: MutableList<Season> = mutableListOf()): List<Season> {
     val batch = traktIds.take(500)
